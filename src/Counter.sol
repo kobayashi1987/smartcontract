@@ -12,3 +12,6 @@ contract Counter {
         number++;
     }
 }
+
+
+// to test the github action : 2214
