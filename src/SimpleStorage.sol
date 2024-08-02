@@ -13,7 +13,7 @@ contract SimpleStorage {
         uint256 favoriteNumber;
         string name;
     }
-    
+
     People[] public people;
 
     mapping(string => uint256) public nameToFavoriteNumber;
