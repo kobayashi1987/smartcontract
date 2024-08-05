@@ -65,3 +65,9 @@ $ anvil --help
 $ cast --help
 ```
 # smartcontract
+# read me test
+
+## TODO
+1. Install `foundry-zksync`
+2. Compile with `zksync`
+3. Reinstall Vanila foundry
