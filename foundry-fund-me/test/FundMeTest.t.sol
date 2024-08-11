@@ -10,7 +10,7 @@ contract FundMeTest is Test {
     FundMe fundMe;
 
     function setUp() external {
-        fundMe = new FundMe();
+        fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
     }
 
     function testDemo() public pure {
@@ -25,5 +25,15 @@ contract FundMeTest is Test {
     function testOwnerIsMsgSender() public view {
         console.log("Hello, theOwnerIsMsgSender!");
         assertEq(fundMe.i_owner(), address(this));
+    }
+
+    // 1. Unit: Testing a single function
+    // 2. Integration: Testing multiple functions
+    // 3. Forked: Testing on a forked network
+    // 4. Staging: Testing on a live network (testnet or mainnet)
+
+    function testPriceFeedVersionIsAccurate() public view {
+        console.log("Hello, thePriceFeedVersionIsAccurate!");
+        assertEq(fundMe.getVersion(), 4);
     }
 }
