@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.19;
 
+import {DeployFundMe} from "../script/DeployFundMe.s.sol";
 import {FundMe} from "../src/FundMe.sol";
 
 import {Test, console} from "forge-std/Test.sol";
@@ -10,7 +11,9 @@ contract FundMeTest is Test {
     FundMe fundMe;
 
     function setUp() external {
-        fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        // fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        DeployFundMe deployFundMe = new DeployFundMe();
+        fundMe = deployFundMe.run(); // DeployFundMe.run()
     }
 
     function testDemo() public pure {
@@ -24,7 +27,7 @@ contract FundMeTest is Test {
 
     function testOwnerIsMsgSender() public view {
         console.log("Hello, theOwnerIsMsgSender!");
-        assertEq(fundMe.i_owner(), address(this));
+        assertEq(fundMe.i_owner(), msg.sender);
     }
 
     // 1. Unit: Testing a single function
