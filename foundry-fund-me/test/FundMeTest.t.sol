@@ -10,15 +10,20 @@ contract FundMeTest is Test {
     FundMe fundMe;
 
     function setUp() external {
-        fundMe = new FundMe(address(0));
+        fundMe = new FundMe();
     }
 
     function testDemo() public pure {
         console.log("Hello, World!");
     }
 
-    function theMinimumDollorIsFive() public view {
+    function testMinimumDollorIsFive() public view {
         console.log("Hello, theMinimumDollorIsFive!");
         assertEq(fundMe.MINIMUM_USD(), 5e18);
+    }
+
+    function testOwnerIsMsgSender() public view {
+        console.log("Hello, theOwnerIsMsgSender!");
+        assertEq(fundMe.i_owner(), address(this));
     }
 }
