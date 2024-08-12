@@ -12,6 +12,7 @@ contract DeployFundMe is Script {
 
     function run() external returns (FundMe) {
         vm.startBroadcast();
+        // Mock
 
         fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
 
