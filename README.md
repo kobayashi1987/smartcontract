@@ -1,1 +1,3 @@
 # smartcontract
+
+## Getting started
