@@ -24,6 +24,10 @@
 
 pragma solidity 0.8.19;
 
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
+
 /**
  * @title A Sample Raffle Contract
  * @author Kobayashi jack
@@ -31,24 +35,83 @@ pragma solidity 0.8.19;
  * @dev Inplements Chainlink VRFv2.5
  */
 
-contract Raffle {
-    error Raffle__SendMoreToEnterRaffle(string message);
+contract Raffle is VRFConsumerBaseV2Plus {
+    error Raffle__SendMoreToEnterRaffle();
+    error Raffle__RaffleNotOpen();
 
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
+    uint32 private constant NUM_WORDS = 1;
     uint256 private immutable i_entranceFee;
+    // @dev The duration of the lottery in seconds
+    uint256 private immutable i_interval;
+    bytes32 private immutable i_keyHash;
+    uint256 private immutable i_subscriptionId;
+    uint32 private immutable i_callbackGasLimit;
+    address payable[] private s_players;
+    uint256 private s_lastTimeStamp;
 
-    constructor(uint256 entranceFee) {
+    /* Events */
+    event RaffleEntered(address indexed player);
+
+    // What data structure should we use? How to keep track of all players?
+    constructor(
+        uint256 entranceFee,
+        uint256 interval,
+        address vrfCoordinator,
+        bytes32 gasLane,
+        uint256 subscriptionId,
+        uint32 callbackGasLimit
+    ) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
+        i_interval = interval;
+        s_lastTimeStamp = block.timestamp;
+        i_keyHash = gasLane;
+        i_subscriptionId = subscriptionId;
+        i_callbackGasLimit = callbackGasLimit;
     }
 
-    function enterRaffle() public payable {
+    // Remove the unnecessary closing brace
+
+    function enterRaffle() external payable {
         // require(msg.value >= i_entranceFee, "Not enough ETH sent");
         //require(msg.value >= i_entranceFee,  SendMoreToEnterRaffle());
         if (msg.value < i_entranceFee) {
-            revert Raffle__SendMoreToEnterRaffle("Not enough ETH sent");
+            revert Raffle__SendMoreToEnterRaffle();
         }
+
+        s_players.push(payable(msg.sender));
+        // 1. Make migration easier
+        // 2. Make front and end "indexing" easier
+        emit RaffleEntered(msg.sender);
     }
 
-    function pickWinner() public {}
+    // 1. get a random number
+    // 2. use random number to pick a winner
+    // 3. be automatically called
+    function pickWinner() external {
+        // check to see if enough time has passed
+        if ((block.timestamp - s_lastTimeStamp) < i_interval) {
+            revert();
+        }
+        VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient
+            .RandomWordsRequest({
+                keyHash: i_keyHash,
+                subId: i_subscriptionId,
+                requestConfirmations: REQUEST_CONFIRMATIONS,
+                callbackGasLimit: i_callbackGasLimit,
+                numWords: NUM_WORDS,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+                )
+            });
+
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+    }
+
+    function fulfillRandomWords(
+        uint256,
+        /* requestId */ uint256[] calldata randomWords
+    ) internal virtual override {}
 
     /** Getter functions **/
     function getEntranceFee() public view returns (uint256) {
