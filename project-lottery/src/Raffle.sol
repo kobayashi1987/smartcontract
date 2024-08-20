@@ -39,6 +39,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__SendMoreToEnterRaffle();
     error Raffle__TransferFailed();
     error Raffle__RaffleNotOpen();
+    error Raffle__UpKeepNotNeeded(uint256 balance,   uint256 playersLength, uint256 raffleState);    
 
     /* Type Declarations */
 
@@ -63,6 +64,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
     /* Events */
     event RaffleEntered(address indexed player);
+    event WinnerPicked(address indexed winner);
 
     // What data structure should we use? How to keep track of all players?
     constructor(
@@ -102,13 +104,44 @@ contract Raffle is VRFConsumerBaseV2Plus {
         emit RaffleEntered(msg.sender);
     }
 
+    /**
+     * @dev This is the function that Chainlink nodes will call to see
+     * if the lottery is ready to have a winner picked.
+     * The following should be true in order for upKeepNeeded to be true:
+     * 1. The time interval has passed between raffle runs
+     * 2. The raffle is in the OPEN state
+     * 3. The contract has ETH (has players)
+     * 4. Implicitly, the subscription has LINK
+     * @param - ignored
+     * @return upKeepNeeded - true if it's time to restart the lottery
+     * @return
+     */
+
+    // When should the winner be picked?
+    function checkUpkeep(
+        bytes memory /* checkData */
+    ) public view returns (bool upKeepNeeded, bytes memory) {
+        bool timeHasPassed = ((block.timestamp - s_lastTimeStamp) >=
+            i_interval);
+        bool isOpen = (s_raffleState == RaffleState.OPEN);
+        bool hasBalance = (address(this).balance > 0);
+        bool hasPlayers = (s_players.length > 0);
+        upKeepNeeded = timeHasPassed && isOpen && hasBalance && hasPlayers;
+
+        return (upKeepNeeded, hex"");
+    }
+
     // 1. get a random number
     // 2. use random number to pick a winner
     // 3. be automatically called
-    function pickWinner() external {
+    function performUpkeep(bytes calldata /* performData */) external {
         // check to see if enough time has passed
-        if ((block.timestamp - s_lastTimeStamp) < i_interval) {
-            revert();
+        (bool upKeepNeeded, ) = checkUpkeep("");
+        if (!upKeepNeeded) {
+            revert Raffle__UpKeepNotNeeded(
+                address(this).balance,
+                s_players.length,
+                uint256(s_raffleState));
         }
 
         s_raffleState = RaffleState.CALCULATING;
@@ -125,10 +158,15 @@ contract Raffle is VRFConsumerBaseV2Plus {
                 )
             });
 
-        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        s_vrfCoordinator.requestRandomWords(request);
     }
 
+    // CEI: Checks, Effects, Interactions Pattern
     function fulfillRandomWords(
+        // Checks
+        // Conditionals
+
+        // Effects (Internal Contract State Update)
         uint256,
         /* requestId */ uint256[] calldata randomWords
     ) internal virtual override {
@@ -137,10 +175,15 @@ contract Raffle is VRFConsumerBaseV2Plus {
         s_recentWinner = recentWinner;
         s_raffleState = RaffleState.OPEN;
 
+        s_players = new address payable[](0);
+        s_lastTimeStamp = block.timestamp;
+
+        // Interactions (External Contracts Interactions)
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
             revert Raffle__TransferFailed();
         }
+        emit WinnerPicked(s_recentWinner);
     }
 
     /** Getter functions **/
