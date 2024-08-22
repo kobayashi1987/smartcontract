@@ -39,7 +39,11 @@ contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__SendMoreToEnterRaffle();
     error Raffle__TransferFailed();
     error Raffle__RaffleNotOpen();
-    error Raffle__UpKeepNotNeeded(uint256 balance,   uint256 playersLength, uint256 raffleState);    
+    error Raffle__UpKeepNotNeeded(
+        uint256 balance,
+        uint256 playersLength,
+        uint256 raffleState
+    );
 
     /* Type Declarations */
 
@@ -60,7 +64,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
     address private s_recentWinner;
-    RaffleState private s_raffleState = RaffleState.OPEN;
+    RaffleState private s_raffleState; // start as open
 
     /* Events */
     event RaffleEntered(address indexed player);
@@ -141,7 +145,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
             revert Raffle__UpKeepNotNeeded(
                 address(this).balance,
                 s_players.length,
-                uint256(s_raffleState));
+                uint256(s_raffleState)
+            );
         }
 
         s_raffleState = RaffleState.CALCULATING;
@@ -189,5 +194,13 @@ contract Raffle is VRFConsumerBaseV2Plus {
     /** Getter functions **/
     function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getRaffleState() public view returns (RaffleState) {
+        return s_raffleState;
+    }
+
+    function getPlayer(uint256 indexOfPlayer) public view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
