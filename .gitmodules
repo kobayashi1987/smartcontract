@@ -19,3 +19,6 @@
 [submodule "project-lottery/lib/solmate"]
 	path = project-lottery/lib/solmate
 	url = https://github.com/transmissions11/solmate
+[submodule "project-lottery/lib/foundry-devops"]
+	path = project-lottery/lib/foundry-devops
+	url = https://github.com/Cyfrin/foundry-devops

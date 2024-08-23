@@ -60,8 +60,8 @@ contract HelperConfig is CodeConstants, Script {
                 // for gasLane: https://docs.chain.link/vrf/v2-5/supported-networks  100 gwei Key Hash
                 gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
                 callbackGasLimit: 500000, //500,000 gas
-                // https://docs.chain.link/vrf/v2-5/subscription/create-manage  for subscriptionID
-                subscriptionId: 102057769450483690799688688107030349732583481472967269829418008407368577461789,
+                // https://docs.chain.link/vrf/v2-5/subscription/create-manage  for subscriptionId
+                subscriptionId: 0, // 102057769450483690799688688107030349732583481472967269829418008407368577461789
                 link: 0x779877A7B0D9E8603169DdbD7836e478b4624789 //  https://docs.chain.link/resources/link-token-contracts
             });
     }
@@ -88,7 +88,7 @@ contract HelperConfig is CodeConstants, Script {
             vrfCoordinator: address(vrfCoordinator),
             // does not matter
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-            subscriptionId: 102057769450483690799688688107030349732583481472967269829418008407368577461789,
+            subscriptionId: 0, //102057769450483690799688688107030349732583481472967269829418008407368577461789,
             callbackGasLimit: 500000, //500,000 gas
             link: address(linkToken)
         });

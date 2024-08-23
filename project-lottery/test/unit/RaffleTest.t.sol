@@ -17,7 +17,6 @@ contract RaffleTest is Test {
     bytes32 gasLane;
     uint256 subscriptionId;
     uint32 callbackGasLimit;
-    uint256 subscriptionID;
 
     address public PLAYER = makeAddr("player");
     uint256 public constant STARTING_PLAYER_BALANCE = 10 ether;
@@ -28,6 +27,8 @@ contract RaffleTest is Test {
     function setUp() external {
         DeployRaffle deployer = new DeployRaffle();
         (raffle, helperConfig) = deployer.deployContract();
+        vm.deal(PLAYER, STARTING_PLAYER_BALANCE);
+
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
         entranceFee = config.entranceFee;
         interval = config.interval;
@@ -73,8 +74,8 @@ contract RaffleTest is Test {
 
     function testDontAllowPlayersToEnterWhileRaffleIsCalculating() public {
         // arrange
+        vm.prank(PLAYER);
         raffle.enterRaffle{value: entranceFee}();
-
         vm.warp(block.timestamp + interval + 1);
         vm.roll(block.number + 1);
         raffle.performUpkeep("");
