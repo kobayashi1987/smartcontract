@@ -27,6 +27,7 @@ pragma solidity 0.8.19;
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
+import {console2} from "forge-std/Script.sol";
 
 /**
  * @title A Sample Raffle Contract
@@ -34,7 +35,6 @@ import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/inter
  * @notice  this contract is for creating a sample raffle contract
  * @dev Inplements Chainlink VRFv2.5
  */
-
 contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__SendMoreToEnterRaffle();
     error Raffle__TransferFailed();
@@ -69,6 +69,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     /* Events */
     event RaffleEntered(address indexed player);
     event WinnerPicked(address indexed winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
 
     // What data structure should we use? How to keep track of all players?
     constructor(
@@ -92,6 +93,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
     // Remove the unnecessary closing brace
 
     function enterRaffle() external payable {
+        console2.log("Hello from Raffle");
+        console2.log(msg.value);
         // require(msg.value >= i_entranceFee, "Not enough ETH sent");
         //require(msg.value >= i_entranceFee,  SendMoreToEnterRaffle());
         if (msg.value < i_entranceFee) {
@@ -163,7 +166,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
                 )
             });
 
-        s_vrfCoordinator.requestRandomWords(request);
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        emit RequestedRaffleWinner(requestId);
     }
 
     // CEI: Checks, Effects, Interactions Pattern
@@ -173,7 +177,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
         // Effects (Internal Contract State Update)
         uint256,
-        /* requestId */ uint256[] calldata randomWords
+        /* requestId */
+        uint256[] calldata randomWords
     ) internal virtual override {
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[indexOfWinner];
@@ -191,16 +196,42 @@ contract Raffle is VRFConsumerBaseV2Plus {
         emit WinnerPicked(s_recentWinner);
     }
 
-    /** Getter functions **/
-    function getEntranceFee() public view returns (uint256) {
-        return i_entranceFee;
-    }
-
+    /**
+     * Getter Functions
+     */
     function getRaffleState() public view returns (RaffleState) {
         return s_raffleState;
     }
 
-    function getPlayer(uint256 indexOfPlayer) public view returns (address) {
-        return s_players[indexOfPlayer];
+    function getNumWords() public pure returns (uint256) {
+        return NUM_WORDS;
+    }
+
+    function getRequestConfirmations() public pure returns (uint256) {
+        return REQUEST_CONFIRMATIONS;
+    }
+
+    function getRecentWinner() external view returns (address) {
+        return s_recentWinner;
+    }
+
+    function getPlayer(uint256 index) external view returns (address) {
+        return s_players[index];
+    }
+
+    function getLastTimeStamp() external view returns (uint256) {
+        return s_lastTimeStamp;
+    }
+
+    function getInterval() external view returns (uint256) {
+        return i_interval;
+    }
+
+    function getEntranceFee() external view returns (uint256) {
+        return i_entranceFee;
+    }
+
+    function getNumberOfPlayers() external view returns (uint256) {
+        return s_players.length;
     }
 }
