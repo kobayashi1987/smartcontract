@@ -9,6 +9,8 @@ fs_permissions = [
 ]
 ffi = true
 
+solc_version = "0.8.20"
+
 remappings = ['@openzeppelin/contracts=lib/openzeppelin-contracts/contracts']
 
 [etherscan]

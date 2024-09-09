@@ -9,7 +9,7 @@ import {BasicNft} from "../src/BasicNft.sol";
 
 contract MintBasicNft is Script {
     string public constant PUG =
-        "ipfs://QmWMaHuG26qTmB1mkN7KwH8NmZDLLJrkE6RX6Rq4zJuc8E";
+        "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
 
     function run() external {
         address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(
