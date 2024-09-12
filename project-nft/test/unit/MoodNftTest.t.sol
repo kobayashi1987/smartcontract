@@ -3,10 +3,10 @@
 pragma solidity ^0.8.20;
 
 // import {DeployMoodNft} from "../script/DeployMoodNft.s.sol";
-import {MoodNft} from "../src/MoodNft.sol";
+import {MoodNft} from "../../src/MoodNft.sol";
 import {Test, console2} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
-import {MintBasicNft} from "../script/Interactions.s.sol";
+import {MintBasicNft} from "../../script/Interactions.s.sol";
 import {ZkSyncChainChecker} from "lib/foundry-devops/src/ZkSyncChainChecker.sol";
 import {FoundryZkSyncChecker} from "lib/foundry-devops/src/FoundryZkSyncChecker.sol";
 

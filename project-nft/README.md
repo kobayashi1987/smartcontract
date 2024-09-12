@@ -78,3 +78,7 @@ PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8c3ZnIHdpZHRoPSIxMDI0cHgiIGhl
 Example SVG:
 
 data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48dGV4dCB4PSIwIiB5PSIxNSIgZmlsbD0iYmxhY2siPkhpISB5b3VyIGJyb3dzZXIgZGVjb2RlZCB0aGlzPC90ZXh0Pjwvc3ZnPg==
+
+1. check the address (read the function)
+2. check the function selector
+3. Decode the calldata (check the parameter)

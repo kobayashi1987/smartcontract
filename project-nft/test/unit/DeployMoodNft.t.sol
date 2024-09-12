@@ -5,7 +5,7 @@ pragma solidity ^0.8.20;
 // import {DeployMoodNft} from "../script/DeployMoodNft.s.sol";
 
 import {Test, console2} from "forge-std/Test.sol";
-import {DeployMoodNft} from "../script/DeployMoodNft.s.sol";
+import {DeployMoodNft} from "../../script/DeployMoodNft.s.sol";
 
 contract DeployMoodNftTest is Test {
     DeployMoodNft public deployer;
