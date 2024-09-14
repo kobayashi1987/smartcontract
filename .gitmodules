@@ -43,3 +43,6 @@
 [submodule "defi-stablecoin/lib/openzeppelin-contracts"]
 	path = defi-stablecoin/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "defi-stablecoin/lib/chainlink-brownie-contracts"]
+	path = defi-stablecoin/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
