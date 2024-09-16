@@ -73,3 +73,5 @@ cast --help
 3. Collateral: Exogenous (Crypto)
     1. wETH
     2. wBTC
+
+1.What are our invariant/properties
