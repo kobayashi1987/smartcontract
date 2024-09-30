@@ -15,7 +15,7 @@ import { HelperConfig } from "../../script/HelperConfig.s.sol";
 import { DeployDSC } from "../../script/DeployDSC.s.sol";
 // import { ERC20Mock } from "@openzeppelin/contracts/mocks/ERC20Mock.sol"; Updated mock location
 // import { ERC20Mock } from "../../mocks/ERC20Mock.sol";
-// import { StopOnRevertHandler } from "./StopOnRevertHandler.t.sol";
+import { Handler } from "./Handler.t.sol";
 import { console } from "forge-std/console.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
@@ -30,6 +30,7 @@ contract Invariants is StdInvariant, Test {
     address public btcUsdPriceFeed;
     address public weth;
     address public wbtc;
+    Handler handler;
 
     uint256 amountCollateral = 10 ether;
     uint256 amountToMint = 100 ether;
@@ -47,7 +48,8 @@ contract Invariants is StdInvariant, Test {
         deployer = new DeployDSC();
         (dsc, dsce, config) = deployer.run();
         (,, weth, wbtc,) = config.activeNetworkConfig();
-        targetContract(address(dsce));
+        handler = new Handler(dsce, dsc);
+        targetContract(address(handler));
         // targetContract(address(ethUsdPriceFeed));// Why can't we just do this?
     }
 
@@ -64,6 +66,7 @@ contract Invariants is StdInvariant, Test {
         console2.log("wethValue:", wethValue);
         console2.log("wbtcValue:", wbtcValue);
         console2.log("totalSupply:", totalSupply);
+        console2.log("Times Mint called: ", handler.timesMintIsCalled());
 
         assert(wethValue + wbtcValue >= totalSupply);
     }
