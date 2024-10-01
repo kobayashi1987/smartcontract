@@ -25,7 +25,6 @@ pragma solidity ^0.8.20;
 //     DecentralizedStableCoin dsc;
 //     HelperConfig config;
 
-
 //     address public ethUsdPriceFeed;
 //     address public btcUsdPriceFeed;
 //     address public weth;
@@ -52,7 +51,7 @@ pragma solidity ^0.8.20;
 //     }
 
 //     function invariant_protocolMustHaveMoreValueThatTotalSupplyDollars() public view {
-//         // get the value of all the collateral in protocal 
+//         // get the value of all the collateral in protocal
 //         // compare it to the total supply of DSC
 //         uint256 totalSupply = dsc.totalSupply();
 //         uint256 totalWelthDeposited = IERC20(weth).balanceOf(address(dsce));
@@ -68,5 +67,4 @@ pragma solidity ^0.8.20;
 //         assert(wethValue + wbtcValue >= totalSupply);
 //     }
 
-   
 // }

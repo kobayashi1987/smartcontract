@@ -17,14 +17,13 @@ import { DeployDSC } from "../../script/DeployDSC.s.sol";
 // import { ERC20Mock } from "../../mocks/ERC20Mock.sol";
 import { Handler } from "./Handler.t.sol";
 import { console } from "forge-std/console.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Invariants is StdInvariant, Test {
     DeployDSC deployer;
     DSCEngine dsce;
     DecentralizedStableCoin dsc;
     HelperConfig config;
-
 
     address public ethUsdPriceFeed;
     address public btcUsdPriceFeed;
@@ -54,7 +53,7 @@ contract Invariants is StdInvariant, Test {
     }
 
     function invariant_protocolMustHaveMoreValueThatTotalSupplyDollars() public view {
-        // get the value of all the collateral in protocal 
+        // get the value of all the collateral in protocal
         // compare it to the total supply of DSC
         uint256 totalSupply = dsc.totalSupply();
         uint256 totalWelthDeposited = IERC20(weth).balanceOf(address(dsce));
@@ -71,5 +70,8 @@ contract Invariants is StdInvariant, Test {
         assert(wethValue + wbtcValue >= totalSupply);
     }
 
-   
+    function invariant_gettterShouldNotRevert() public view {
+        dsce.getLiquidationBonus();
+        dsce.getPrecision();
+    }
 }

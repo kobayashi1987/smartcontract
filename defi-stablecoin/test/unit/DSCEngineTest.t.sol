@@ -13,11 +13,10 @@ import { MockV3Aggregator } from "../mocks/MockV3Aggregator.sol";
 // import { MockFailedMintDSC } from "../mocks/MockFailedMintDSC.sol";
 // import { MockFailedTransferFrom } from "../mocks/MockFailedTransferFrom.sol";
 // import { MockFailedTransfer } from "../mocks/MockFailedTransfer.sol";
-import { Test, console2} from "forge-std/Test.sol";
+import { Test, console2 } from "forge-std/Test.sol";
 import { StdCheats } from "forge-std/StdCheats.sol";
 
 contract DSCEngineTest is StdCheats, Test {
-
     DSCEngine public dsce;
     DecentralizedStableCoin public dsc;
     HelperConfig public helperConfig;
@@ -38,11 +37,9 @@ contract DSCEngineTest is StdCheats, Test {
     uint256 public constant LIQUIDATION_THRESHOLD = 50;
     uint256 public constant STARTING_ERC20_BALANCE = 10 ether;
 
-
     // Liquidation
     address public liquidator = makeAddr("liquidator");
     uint256 public collateralToCover = 20 ether;
-
 
     DeployDSC deployer = new DeployDSC();
 
@@ -87,11 +84,10 @@ contract DSCEngineTest is StdCheats, Test {
 
     function testGetUsdValue() public view {
         uint256 ethAmount = 15e18;
-        uint256 expectedUsd = 30000e18;
+        uint256 expectedUsd = 30_000e18;
         uint256 actualUsd = dsce.getUsdValue(weth, ethAmount);
         assertEq(actualUsd, expectedUsd);
     }
-
 
     function testGetTokenAmountFromUsd() public view {
         // If we want $100 of WETH @ $2000/WETH, that would be 0.05 WETH
@@ -99,7 +95,6 @@ contract DSCEngineTest is StdCheats, Test {
         uint256 amountWeth = dsce.getTokenAmountFromUsd(weth, 100 ether);
         assertEq(amountWeth, expectedWeth);
     }
-
 
     ///////////////////////////////////////
     // depositCollateral Tests //
@@ -122,7 +117,6 @@ contract DSCEngineTest is StdCheats, Test {
         vm.stopPrank();
     }
 
-
     modifier depositedCollateral() {
         vm.startPrank(USER);
         ERC20Mock(weth).approve(address(dsce), AMOUNT_COLLATERAL);
@@ -137,6 +131,4 @@ contract DSCEngineTest is StdCheats, Test {
         assertEq(totalDscMinted, 0);
         assertEq(expectedDepositedAmount, AMOUNT_COLLATERAL);
     }
-   
-
 }

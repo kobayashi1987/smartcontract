@@ -213,7 +213,14 @@ contract DSCEngine is ReentrancyGuard {
     anyone.
      * For example, if the price of the collateral plummeted before anyone could be liquidated.
      */
-    function liquidate(address collateral, address user, uint256 debtToCover) external moreThanZero(debtToCover) nonReentrant
+    function liquidate(
+        address collateral,
+        address user,
+        uint256 debtToCover
+    )
+        external
+        moreThanZero(debtToCover)
+        nonReentrant
     {
         uint256 startingUserHealthFactor = _healthFactor(user);
         if (startingUserHealthFactor >= MIN_HEALTH_FACTOR) {
@@ -286,7 +293,13 @@ contract DSCEngine is ReentrancyGuard {
     // 1. check health factor : must be over 1 after collateral is redeemed
     // DRY: Don't repeat yourself
     // CEI: Check effects, then interactions
-    function _redeemCollateral(address tokenCollateralAddress, uint256 amountCollateral, address from, address to) private
+    function _redeemCollateral(
+        address tokenCollateralAddress,
+        uint256 amountCollateral,
+        address from,
+        address to
+    )
+        private
     {
         s_collateralDeposited[from][tokenCollateralAddress] -= amountCollateral;
         emit CollateralRedeemed(from, to, tokenCollateralAddress, amountCollateral);
@@ -311,9 +324,7 @@ contract DSCEngine is ReentrancyGuard {
     // Private & Internal View & Pure Functions
     //////////////////////////////
 
-    function _getAccountInformation(
-        address user
-    )
+    function _getAccountInformation(address user)
         private
         view
         returns (uint256 totalDscMinted, uint256 collateralValueInUsd)
@@ -381,9 +392,7 @@ contract DSCEngine is ReentrancyGuard {
         return _calculateHealthFactor(totalDscMinted, collateralValueInUsd);
     }
 
-    function getAccountInformation(
-        address user
-    )
+    function getAccountInformation(address user)
         external
         view
         returns (uint256 totalDscMinted, uint256 collateralValueInUsd)
