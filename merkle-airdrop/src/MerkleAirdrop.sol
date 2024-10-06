@@ -28,7 +28,7 @@ contract MerkleAirdrop {
         i_airdropToken = airdropToken;
     }
 
-    function claime(address account, uint256 amount, bytes32[] calldata merkleProof) external {
+    function claim(address account, uint256 amount, bytes32[] calldata merkleProof) external {
         if (s_hasClaimed[account]) {
             revert MerkleAirDrop__AlreadyClaimed();
         }
