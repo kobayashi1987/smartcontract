@@ -134,4 +134,6 @@ contract MerkleAirdrop is EIP712 {
     //     bytes memory signature = abi.encode(_v, _r, _s);
     //     return SignatureChecker.isValidSignatureNow(signer, digest, signature);
     // }
+
+    // 2025-02-02
 }
